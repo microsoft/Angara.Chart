@@ -1,4 +1,4 @@
-﻿namespace AssemblyInfo
+namespace AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices

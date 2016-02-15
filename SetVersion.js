@@ -23,7 +23,7 @@ module.exports = function (grunt) {
           assemblyInfo: {
               options: {
                 patterns: [{
-                    match: /(let\s*Version\s*=\s*")\d+\.\d+\.\d+("\s*\/\/ Assembly semantic version)/,
+                    match: /(let\s*Version\s*=\s*")\d+\.\d+\.\d+("\s*(\/\/ Assembly semantic version)?)/,
                     replace: "$1<%=version%>$2"
                 }]
               },
