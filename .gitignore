@@ -16,9 +16,8 @@
 [Bb]in/
 [Oo]bj/
 
-# Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
-!packages/*/build/
 /ext/nuget
+
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -157,6 +156,8 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-
-/src/**/nuget.exe
-/src/**/*.nupkg
+/src/Angara.ChartJS/lib
+bower_components
+node_modules
+dist
+.baseDir.*
