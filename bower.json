@@ -8,7 +8,7 @@
   "private": true,
   "description": "Angara module that allows to use the ChartViewer to display Angara.Chart plots.",
   "main": [
-    "/dist/angara.chart.js"
+    "./dist/Chart.js"
   ],
   "moduleType": [
     "amd"
