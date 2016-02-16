@@ -121,7 +121,6 @@ type Plot private () =
     static let defaultShape = MarkersShape.Box
     static let defaultBorderColor = "black"
     static let defaultColor = "#606060"
-    static let lineType = "Line"
     static let defaultStroke = "#1F497D"
     static let defaultThickness = 1.0
     static let defaultFill68 = "#1F497D"
