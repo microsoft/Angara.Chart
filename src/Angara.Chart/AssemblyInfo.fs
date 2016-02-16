@@ -16,7 +16,7 @@ module internal Const =
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("Microsoft Research")>]
 [<assembly: AssemblyProduct("Angara")>]
-[<assembly: AssemblyCopyright("Copyright © 2016")>]
+[<assembly: AssemblyCopyright("Copyright © 2016 Microsoft Research")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
 
