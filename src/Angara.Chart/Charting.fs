@@ -12,6 +12,7 @@ and PlotPropertyValue =
 type PlotInfo = 
     { Kind : string 
     ; DisplayName : string
+    ; Titles : Map<string, string>
     ; Properties: PlotProperties }
 
 
