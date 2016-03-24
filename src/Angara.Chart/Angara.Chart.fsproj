@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Charting.fs" />
-    <Compile Include="Titles.fs" />
     <Compile Include="PlotInfoAPI.fs" />
     <Compile Include="Serializer.fs" />
     <Compile Include="Register.fs" />
