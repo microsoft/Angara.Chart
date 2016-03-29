@@ -22,7 +22,7 @@ type Chart =
     static member ofList plots : Chart = { Plots = plots }
 
 /// Defines names of heatmap axes
-type HeatmapTitles = {x: string option; y: string option}
+type HeatmapTitles = {x: string option; y: string option; value: string option}
 
 /// Defines names of marker chart axes
 type MarkersTitles = {x: string option; y: string option; color: string option; size: string option}
@@ -35,7 +35,7 @@ type BandTitles = { x: string option; y1: string option; y2: string option}
 
 type Titles () =
     ///Allows to set titles for heatmap chart axes
-    static member heatmap (?x_title: string, ?y_title: string) : HeatmapTitles = {HeatmapTitles.x = x_title; HeatmapTitles.y = y_title}
+    static member heatmap (?x_title: string, ?y_title: string, ?value_title: string) : HeatmapTitles = {HeatmapTitles.x = x_title; HeatmapTitles.y = y_title; HeatmapTitles.value = value_title}
     ///Allows to set titles for line chart axes
     static member line (?x_title: string, ?y_title: string) : LineTitles = {LineTitles.x = x_title; LineTitles.y = y_title}
     ///Allows to set titles for band chart axes

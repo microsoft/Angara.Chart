@@ -127,7 +127,7 @@ type Plot private () =
     static let defaultMarkersTitles = {x = None; y = None; color = None; size = None}
     static let defaultLineTitles = {LineTitles.x = None; LineTitles.y = None}
     static let defaultBandTitles = {x = None; y1 = None; y2 = None}
-    static let defaultHeatmapTitles = {HeatmapTitles.x = None; HeatmapTitles.y = None}
+    static let defaultHeatmapTitles = {HeatmapTitles.x = None; HeatmapTitles.y = None; HeatmapTitles.value = None}
     
     static let quantilesToPropertyValue (quant: QuantileArray) : PlotPropertyValue =
         PlotPropertyValue.OfPairs 
@@ -337,6 +337,9 @@ type Plot private () =
                                     | None -> Map.empty<string, string>
                             let t = match value.y with
                                     | Some y -> t.Add("y", y)
+                                    | None -> t
+                            let t = match value.value with
+                                    | Some value -> t.Add("value", value)
                                     | None -> t
                             t
                       | None -> Map.empty
