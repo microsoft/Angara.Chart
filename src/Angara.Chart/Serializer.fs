@@ -14,7 +14,7 @@ module internal Helpers =
         | RealArray arr -> InfoSet.DoubleArray arr
         | Composite pp -> SerializePlotProperties pp
 
-    let SerializePlotInfo(pi : PlotInfo) = InfoSet.EmptyMap.AddString("kind", pi.Kind).AddString("displayName", pi.DisplayName).AddInfoSet("properties", SerializePlotProperties(pi.Properties))
+    let SerializePlotInfo(pi : PlotInfo) = InfoSet.EmptyMap.AddString("kind", pi.Kind).AddString("displayName", pi.DisplayName).AddInfoSet("titles", InfoSet.ofPairs(pi.Titles |> Map.map(fun _ y -> InfoSet.String y) |> Map.toSeq)).AddInfoSet("properties", SerializePlotProperties(pi.Properties))
 
     let rec DeserializePlotProperties(infoSet : InfoSet) : PlotProperties = 
         infoSet.ToMap() |> Map.map(fun _ i -> DeserializePlotPropertyValue i)
@@ -31,6 +31,7 @@ module internal Helpers =
         let map = infoSet.ToMap()
         { DisplayName = map.["displayName"].ToStringValue()
         ; Kind = map.["kind"].ToStringValue()
+        ; Titles = map.["titles"].ToMap() |> Map.map(fun _ y -> y.ToStringValue())
         ; Properties = DeserializePlotProperties(map.["properties"]) }
 
 open Helpers
