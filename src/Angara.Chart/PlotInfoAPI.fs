@@ -107,7 +107,6 @@ type HeatmapTreatAs =
     | Gradient
     | Discrete
 
-
 [<AbstractClass; Sealed>]
 type Plot private () = 
     static let markersType = "markers"
@@ -125,6 +124,10 @@ type Plot private () =
     static let defaultThickness = 1.0
     static let defaultFill68 = "#1F497D"
     static let defaultFill95 = "#1F497D"
+    static let defaultMarkersTitles = {x = None; y = None; color = None; size = None}
+    static let defaultLineTitles = {LineTitles.x = None; LineTitles.y = None}
+    static let defaultBandTitles = {x = None; y1 = None; y2 = None}
+    static let defaultHeatmapTitles = {HeatmapTitles.x = None; HeatmapTitles.y = None; HeatmapTitles.value = None}
     
     static let quantilesToPropertyValue (quant: QuantileArray) : PlotPropertyValue =
         PlotPropertyValue.OfPairs 
@@ -146,7 +149,7 @@ type Plot private () =
 
     /// Displays data as a collection of points, each having the value of one variable determining the position on the horizontal axis and the value of the other variable determining the position on the vertical axis. 
     static member markers (x : MarkersX, y : MarkersY, ?color : MarkersColor, ?colorPalette : string, 
-                           ?size : MarkersSize, ?sizeRange : MarkersSizeRange, ?shape : MarkersShape, ?borderColor : string, ?displayName: string) : PlotInfo = 
+                           ?size : MarkersSize, ?sizeRange : MarkersSizeRange, ?shape : MarkersShape, ?borderColor : string, ?displayName: string, ?titles: MarkersTitles) : PlotInfo = 
         let name = defaultArg displayName "markers"
         let colorPalette = defaultArg colorPalette defaultColorPalette
         let size = defaultArg size (MarkersSize.Value defaultSize)
@@ -188,32 +191,49 @@ type Plot private () =
             | MarkersSize.UncertainValues array ->
                 [ "size", quantilesToPropertyValue array
                 ; "sizeRange", PlotPropertyValue.OfPairs ["min", RealValue sizeMin; "max", RealValue sizeMax ] ] 
-        
+        let titles =  match titles with
+                      | Some value -> 
+                            let t = match value.x with
+                                    | Some x -> Map.empty<string, string>.Add("x", x)
+                                    | None -> Map.empty<string, string>
+                            let t = match value.y with
+                                    | Some y -> t.Add("y", y)
+                                    | None -> t
+                            let t = match value.color with
+                                    | Some color -> t.Add("color", color)
+                                    | None -> t
+                            let t = match value.size with
+                                    | Some size -> t.Add("size", size)
+                                    | None -> t
+                            t
+                      | None -> Map.empty
         { Kind = markersType
         ; DisplayName = name
+        ; Titles = titles
         ; Properties = 
             Map.ofList ([ "x", x; "y", y; "shape", shapeToPropertyValue shape; "borderColor", PlotPropertyValue.StringValue borderColor ] @ color @ size) }
 
     /// Displays data as a collection of points, each having the value of one variable determining the position on the horizontal axis and the value of the other variable determining the position on the vertical axis. 
     static member markers (seriesX : float[], seriesY : float[], ?color : MarkersColor, 
                            ?colorPalette : string, ?size : MarkersSize, ?sizeRange : MarkersSizeRange, 
-                           ?shape : MarkersShape, ?borderColor : string, ?displayName: string) : PlotInfo = 
+                           ?shape : MarkersShape, ?borderColor : string, ?displayName: string, ?titles: MarkersTitles) : PlotInfo = 
         let colorPalette = defaultArg colorPalette defaultColorPalette
         let size = defaultArg size (MarkersSize.Value defaultSize)
         let sizeRange = defaultArg sizeRange defaultSizeRange
         let shape = defaultArg shape defaultShape
         let borderColor = defaultArg borderColor defaultBorderColor
         let name = defaultArg displayName "markers"
+        let titles = defaultArg titles defaultMarkersTitles
         match color with
         | Some(color) -> 
             Plot.markers (MarkersX.Values seriesX, MarkersY.Values seriesY, displayName = name, color = color, colorPalette = colorPalette, 
-                 size = size, sizeRange = sizeRange, shape = shape, borderColor = borderColor)
+                 size = size, sizeRange = sizeRange, shape = shape, borderColor = borderColor, titles = titles)
         | None -> 
             Plot.markers (MarkersX.Values seriesX, MarkersY.Values seriesY, displayName = name, colorPalette = colorPalette, size = size, 
-                 sizeRange = sizeRange, shape = shape, borderColor = borderColor)
+                 sizeRange = sizeRange, shape = shape, borderColor = borderColor, titles = titles)
     
     static member line (x : LineX, y : LineY, ?stroke : string, ?thickness : float, 
-                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string) : PlotInfo = 
+                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string, ?titles: LineTitles) : PlotInfo = 
         let stroke = defaultArg stroke defaultStroke
         let thickness = defaultArg thickness defaultThickness
         let fill68 = defaultArg fill68 defaultFill68
@@ -237,29 +257,41 @@ type Plot private () =
                 ; "fill_68", PlotPropertyValue.StringValue fill68
                 ; "fill_95", PlotPropertyValue.StringValue fill95
                 ; "treatAs", PlotPropertyValue.StringValue (match treatAs with LineTreatAs.Function -> "0" | LineTreatAs.Trajectory -> "1") ])
-        { DisplayName = name; Kind = lineType ; Properties = props }
+        let titles =  match titles with
+                      | Some value -> 
+                            let t = match value.x with
+                                    | Some x -> Map.empty<string, string>.Add("x", x)
+                                    | None -> Map.empty<string, string>
+                            let t = match value.y with
+                                    | Some y -> t.Add("y", y)
+                                    | None -> t
+                            t
+                      | None -> Map.empty
+        { DisplayName = name; Kind = lineType ; Titles = titles; Properties = props }
  
     static member line (seriesX : float[], seriesY : float[], ?stroke : string, ?thickness : float, 
-                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string) : PlotInfo = 
+                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string, ?titles: LineTitles) : PlotInfo = 
         let stroke = defaultArg stroke defaultStroke
         let thickness = defaultArg thickness defaultThickness
         let fill68 = defaultArg fill68 defaultFill68
         let fill95 = defaultArg fill95 defaultFill95
         let treatAs = defaultArg treatAs LineTreatAs.Function
         let displayName = defaultArg displayName "line"
-        Plot.line(LineX.Values seriesX, LineY.Values seriesY, displayName = displayName, stroke = stroke, thickness = thickness, treatAs = treatAs, fill68 = fill68, fill95 = fill95)
+        let titles = defaultArg titles defaultLineTitles
+        Plot.line(LineX.Values seriesX, LineY.Values seriesY, displayName = displayName, stroke = stroke, thickness = thickness, treatAs = treatAs, fill68 = fill68, fill95 = fill95, titles = titles)
         
     static member line (seriesY : float[], ?stroke : string, ?thickness : float, 
-                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string) : PlotInfo = 
+                        ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string, ?titles: LineTitles) : PlotInfo = 
         let stroke = defaultArg stroke defaultStroke
         let thickness = defaultArg thickness defaultThickness
         let fill68 = defaultArg fill68 defaultFill68
         let fill95 = defaultArg fill95 defaultFill95
         let treatAs = defaultArg treatAs LineTreatAs.Function
         let displayName = defaultArg displayName "line"
-        Plot.line(LineX.Indices, LineY.Values seriesY, displayName = displayName, stroke = stroke, thickness = thickness, treatAs = treatAs, fill68 = fill68, fill95 = fill95)
+        let titles = defaultArg titles defaultLineTitles
+        Plot.line(LineX.Indices, LineY.Values seriesY, displayName = displayName, stroke = stroke, thickness = thickness, treatAs = treatAs, fill68 = fill68, fill95 = fill95, titles = titles)
 
-    static member band(seriesX: float[], seriesY1: float[], seriesY2: float[], ?fill: string, ?displayName: string) : PlotInfo =
+    static member band(seriesX: float[], seriesY1: float[], seriesY2: float[], ?fill: string, ?displayName: string, ?titles: BandTitles) : PlotInfo =
         let name = defaultArg displayName "band"
         let fill = defaultArg fill defaultFill68
         let props = 
@@ -267,11 +299,24 @@ type Plot private () =
             ; "y1", PlotPropertyValue.RealArray seriesY1
             ; "y2", PlotPropertyValue.RealArray seriesY2
             ; "fill", PlotPropertyValue.StringValue fill ] |> Map.ofList
-        { DisplayName = name; Kind = bandType; Properties = props }
+        let titles =  match titles with
+                      | Some value -> 
+                            let t = match value.x with
+                                    | Some x -> Map.empty<string, string>.Add("x", x)
+                                    | None -> Map.empty<string, string>
+                            let t = match value.y1 with
+                                    | Some y1 -> t.Add("y1", y1)
+                                    | None -> t
+                            let t = match value.y2 with
+                                    | Some y2 -> t.Add("y2", y2)
+                                    | None -> t
+                            t
+                      | None -> Map.empty
+        { DisplayName = name; Kind = bandType; Titles = titles; Properties = props }
 
 
 
-    static member heatmap (x: float[], y: float[], values: HeatmapValues, ?colorPalette: string, ?treatAs: HeatmapTreatAs, ?displayName: string) : PlotInfo =
+    static member heatmap (x: float[], y: float[], values: HeatmapValues, ?colorPalette: string, ?treatAs: HeatmapTreatAs, ?displayName: string, ?titles: HeatmapTitles ) : PlotInfo =
         let colorPalette = defaultArg colorPalette defaultColorPalette
         let treat = defaultArg treatAs HeatmapTreatAs.Gradient
         let treatDataAs = 
@@ -285,11 +330,25 @@ type Plot private () =
             | HeatmapValues.TabularValues array -> [ "values", PlotPropertyValue.RealArray array ]
             | HeatmapValues.TabularUncertainValues array -> [ "values", quantilesToPropertyValue array ]
         let name = defaultArg displayName "heatmap"
+        let titles =  match titles with
+                      | Some value -> 
+                            let t = match value.x with
+                                    | Some x -> Map.empty<string, string>.Add("x", x)
+                                    | None -> Map.empty<string, string>
+                            let t = match value.y with
+                                    | Some y -> t.Add("y", y)
+                                    | None -> t
+                            let t = match value.value with
+                                    | Some value -> t.Add("value", value)
+                                    | None -> t
+                            t
+                      | None -> Map.empty
+        let props = Map.ofList (x @ y @ values @ [ "colorPalette", StringValue colorPalette ; "treatAs", StringValue treatDataAs ])
+        { DisplayName = name; Kind = heatmapType; Titles = titles; Properties = props}
 
-        let props = Map.ofList (x @ y @ values @ [ "palette", StringValue colorPalette ; "treatAs", StringValue treatDataAs ])
-        { DisplayName = name; Kind = heatmapType ; Properties = props}
-
-    static member heatmap (x: float[], y: float[], values: float[], ?colorPalette: string, ?treatAs: HeatmapTreatAs, ?displayName: string) : PlotInfo =
+    static member heatmap (x: float[], y: float[], values: float[], ?colorPalette: string, ?treatAs: HeatmapTreatAs, ?displayName: string, ?titles: HeatmapTitles ) : PlotInfo =
         let colorPalette = defaultArg colorPalette defaultColorPalette
-        let treat = defaultArg treatAs HeatmapTreatAs.Gradient        
-        Plot.heatmap(x, y, HeatmapValues.TabularValues values, colorPalette, treat)
+        let treat = defaultArg treatAs HeatmapTreatAs.Gradient   
+        let name = defaultArg displayName "heatmap"    
+        let titles  = defaultArg titles defaultHeatmapTitles
+        Plot.heatmap(x, y, HeatmapValues.TabularValues values, colorPalette, treat, name, titles)

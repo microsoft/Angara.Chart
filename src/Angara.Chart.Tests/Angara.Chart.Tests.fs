@@ -14,7 +14,7 @@ let ``Serialization of PlotInfo``() =
         ; "real", PlotPropertyValue.RealValue System.Math.PI
         ; "real Array", PlotPropertyValue.RealArray [| System.Math.PI |] ] |> Map.ofList
     let composite =  [ "composite", PlotPropertyValue.Composite primitives ] |> Map.ofList
-    let plotInfo : Angara.Charting.PlotInfo = { Kind = "kind"; DisplayName = "display name"; Properties = composite }
+    let plotInfo : Angara.Charting.PlotInfo = { Kind = "kind"; DisplayName = "display name"; Titles = Map.empty.Add("x", "y"); Properties = composite }
     let chartInfo = [ plotInfo ] |> Chart.ofList
     let infoSet = ArtefactSerializer.Serialize lib chartInfo
     let chartInfo2 = ArtefactSerializer.Deserialize lib infoSet
