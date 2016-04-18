@@ -1,0 +1,56 @@
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    Angara.Serialization (0.2)
+
+GROUP Build
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    FAKE (4.25.4)
+    FSharp.Compiler.Service (2.0.0.6)
+    FSharp.Formatting (2.14.2)
+      FSharp.Compiler.Service (2.0.0.6)
+      FSharpVSPowerTools.Core (>= 2.3 < 2.4)
+    FSharpVSPowerTools.Core (2.3)
+      FSharp.Compiler.Service (>= 2.0.0.3)
+    Microsoft.Bcl (1.1.10) - framework: net10, net11, net20, net30, net35, net40, net40-full
+      Microsoft.Bcl.Build (>= 1.0.14)
+    Microsoft.Bcl.Build (1.0.21) - import_targets: false, framework: net10, net11, net20, net30, net35, net40, net40-full
+    Microsoft.Net.Http (2.2.29) - framework: net10, net11, net20, net30, net35, net40, net40-full
+      Microsoft.Bcl (>= 1.1.10)
+      Microsoft.Bcl.Build (>= 1.0.14)
+    Node.js (5.3)
+    Npm.js (2.13.1)
+      Node.js (>= 0.12.7)
+    Octokit (0.19)
+      Microsoft.Net.Http
+    SourceLink.Fake (1.1)
+GITHUB
+  remote: fsharp/FAKE
+  specs:
+    modules/Octokit/Octokit.fsx (8f3531f4c47b86e51b4e32409bd760f79a555c62)
+      Octokit
+GROUP Docs
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    Angara.Html (0.1.5)
+      Angara.Reinstate (>= 0.1.5)
+      Angara.Serialization.Json (>= 0.1.2)
+      DotNetZip (>= 1.9.8)
+    Angara.Reinstate (0.1.5)
+      Angara.Serialization.Json (>= 0.1.2)
+    Angara.Serialization (0.2)
+    Angara.Serialization.Json (0.2)
+      Angara.Serialization (>= 0.2)
+      Newtonsoft.Json (>= 8.0.3)
+    DotNetZip (1.9.8)
+    Newtonsoft.Json (8.0.3)
+
+GROUP Test
+NUGET
+  remote: https://www.nuget.org/api/v2
+  specs:
+    NUnit (2.6.4)
+    NUnit.Runners (2.6.4)

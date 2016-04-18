@@ -1,0 +1,23 @@
+source https://nuget.org/api/v2
+nuget Angara.Serialization
+
+group Build
+  source https://nuget.org/api/v2
+  
+nuget npm.js
+  nuget SourceLink.Fake
+  nuget FAKE
+  nuget FSharp.Formatting
+
+  github fsharp/FAKE modules/Octokit/Octokit.fsx
+
+group Test
+  source https://nuget.org/api/v2
+  
+  nuget NUnit ~> 2
+  nuget NUnit.Runners ~> 2
+
+group Docs
+source https://www.nuget.org/api/v2
+
+nuget Angara.Html
