@@ -1,5 +1,5 @@
 source https://nuget.org/api/v2
-nuget Angara.Serialization
+nuget Angara.Serialization ~> 0.2.0
 
 group Build
   source https://nuget.org/api/v2
@@ -20,4 +20,4 @@ group Test
 group Docs
 source https://www.nuget.org/api/v2
 
-nuget Angara.Html
+nuget Angara.Html ~> 0.2.0
