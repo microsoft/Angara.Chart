@@ -29,7 +29,7 @@
     "tsd.json"
   ],
   "dependencies": {
-    "idd": "1.2.x",
+    "idd": "1.3.x",
     "jquery": "~2.1.4"
   },
   "devDependencies": {

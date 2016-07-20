@@ -111,7 +111,7 @@ type HeatmapTreatAs =
 type Plot private () = 
     static let markersType = "markers"
     static let lineType = "line"
-    static let bandType = "band"
+    static let areaType = "area"
     static let heatmapType = "heatmap"
     static let defaultColorPalette = 
         "#a6611aff=0.09090909090909091=#ca8325ff=0.18181818181818182=#d8a145ff=0.2727272727272727=#ddba6fff=0.36363636363636364=#cfdb7dff=0.4545454545454546=#92d67eff=0.5454545454545454=#7fd1a1ff=0.6363636363636363=#6cccbdff=0.7272727272727273=#2cd2b8ff=0.8181818181818182=#11b098ff=0.9090909090909092=#018571ff"
@@ -291,8 +291,8 @@ type Plot private () =
         let titles = defaultArg titles defaultLineTitles
         Plot.line(LineX.Indices, LineY.Values seriesY, displayName = displayName, stroke = stroke, thickness = thickness, treatAs = treatAs, fill68 = fill68, fill95 = fill95, titles = titles)
 
-    static member band(seriesX: float[], seriesY1: float[], seriesY2: float[], ?fill: string, ?displayName: string, ?titles: BandTitles) : PlotInfo =
-        let name = defaultArg displayName "band"
+    static member area(seriesX: float[], seriesY1: float[], seriesY2: float[], ?fill: string, ?displayName: string, ?titles: AreaTitles) : PlotInfo =
+        let name = defaultArg displayName "area"
         let fill = defaultArg fill defaultFill68
         let props = 
             [ "x", PlotPropertyValue.RealArray seriesX
@@ -312,7 +312,7 @@ type Plot private () =
                                     | None -> t
                             t
                       | None -> Map.empty
-        { DisplayName = name; Kind = bandType; Titles = titles; Properties = props }
+        { DisplayName = name; Kind = areaType; Titles = titles; Properties = props }
 
 
 
@@ -339,7 +339,7 @@ type Plot private () =
                                     | Some y -> t.Add("y", y)
                                     | None -> t
                             let t = match value.value with
-                                    | Some value -> t.Add("value", value)
+                                    | Some value -> t.Add("values", value)
                                     | None -> t
                             t
                       | None -> Map.empty
