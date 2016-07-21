@@ -48,8 +48,10 @@ type MarkersSize =
     /// Markers are rendered as 'petals' when shape of a marker indicates level of uncertainty.
     | UncertainValues   of QuantileArray
 
-/// Defines minimal and maximal size in screen pixels.
-type MarkersSizeRange = float * float
+/// Defines size palette which can be either normalized or absolute.
+type MarkersSizePalette = 
+    | Normalized    of min:float * max:float
+    | Absolute      of sizeMin:float * sizeMax:float * valueMin:float * valueMax:float
 
 type MarkersShape = 
     | Box
@@ -115,7 +117,7 @@ type Plot private () =
     static let heatmapType = "heatmap"
     static let defaultColorPalette = 
         "#a6611aff=0.09090909090909091=#ca8325ff=0.18181818181818182=#d8a145ff=0.2727272727272727=#ddba6fff=0.36363636363636364=#cfdb7dff=0.4545454545454546=#92d67eff=0.5454545454545454=#7fd1a1ff=0.6363636363636363=#6cccbdff=0.7272727272727273=#2cd2b8ff=0.8181818181818182=#11b098ff=0.9090909090909092=#018571ff"
-    static let defaultSizeRange = 10.0, 30.0
+    static let defaultSizePalette = MarkersSizePalette.Normalized(10.0, 30.0)
     static let defaultSize = 8.0
     static let defaultShape = MarkersShape.Box
     static let defaultBorderColor = "black"
@@ -146,27 +148,35 @@ type Plot private () =
         | Triangle -> StringValue "triangle"
         | Custom s -> StringValue s
 
+    static let sizePaletteToPropertyValue = 
+        function
+        | Absolute (sizeMin, sizeMax, valueMin, valueMax) ->
+            [ "sizeRange", PlotProperties(["min", PlotPropertyValue.RealValue sizeMin; "max", PlotPropertyValue.RealValue sizeMax]) |> PlotPropertyValue.Composite
+              "valueRange", PlotProperties(["min", PlotPropertyValue.RealValue valueMin; "max", PlotPropertyValue.RealValue valueMax]) |> PlotPropertyValue.Composite ]
+            |> Map.ofList |> PlotPropertyValue.Composite
+        | Normalized (sizeMin, sizeMax) ->
+            [ "sizeRange", PlotProperties(["min", PlotPropertyValue.RealValue sizeMin; "max", PlotPropertyValue.RealValue sizeMax]) |> PlotPropertyValue.Composite ]
+            |> Map.ofList |> PlotPropertyValue.Composite
 
     /// Displays data as a collection of points, each having the value of one variable determining the position on the horizontal axis and the value of the other variable determining the position on the vertical axis. 
     static member markers (x : MarkersX, y : MarkersY, ?color : MarkersColor, ?colorPalette : string, 
-                           ?size : MarkersSize, ?sizeRange : MarkersSizeRange, ?shape : MarkersShape, ?borderColor : string, ?displayName: string, ?titles: MarkersTitles) : PlotInfo = 
+                           ?size : MarkersSize, ?sizePalette : MarkersSizePalette, ?shape : MarkersShape, ?borderColor : string, ?displayName: string, ?titles: MarkersTitles) : PlotInfo = 
         let name = defaultArg displayName "markers"
         let colorPalette = defaultArg colorPalette defaultColorPalette
         let size = defaultArg size (MarkersSize.Value defaultSize)
-        let sizeMin, sizeMax = defaultArg sizeRange defaultSizeRange
-        let shape = defaultArg shape defaultShape
+        let sizePalette = defaultArg sizePalette defaultSizePalette        
         let borderColor = defaultArg borderColor defaultBorderColor
 
         let x = 
             match x with
             | MarkersX.Values array -> PlotPropertyValue.RealArray array
         
-        let y = 
+        let y2 = 
             match y with
             | MarkersY.Values array -> PlotPropertyValue.RealArray array
             | MarkersY.UncertainValues array -> quantilesToPropertyValue array
 
-        let color = 
+        let color2 = 
             match color with
             | Some c -> 
                 match c with
@@ -181,16 +191,16 @@ type Plot private () =
             | None -> 
                     [ "color", PlotPropertyValue.StringValue defaultColor ]
         
-        let size = 
+        let size2 = 
             match size with
             | MarkersSize.Value n -> 
                 [ "size", PlotPropertyValue.RealValue n ]
             | MarkersSize.Values array -> 
                 [ "size", PlotPropertyValue.RealArray array
-                ; "sizeRange", PlotPropertyValue.OfPairs ["min", RealValue sizeMin; "max", RealValue sizeMax ] ] 
+                ; "sizePalette", sizePaletteToPropertyValue sizePalette ] 
             | MarkersSize.UncertainValues array ->
                 [ "size", quantilesToPropertyValue array
-                ; "sizeRange", PlotPropertyValue.OfPairs ["min", RealValue sizeMin; "max", RealValue sizeMax ] ] 
+                ; "sizePalette", sizePaletteToPropertyValue sizePalette ] 
         let titles =  match titles with
                       | Some value -> 
                             let t = match value.x with
@@ -207,19 +217,30 @@ type Plot private () =
                                     | None -> t
                             t
                       | None -> Map.empty
+
+        let shape2 =
+            match shape with
+            | Some s -> s
+            | None ->
+                match color, size, y with
+                | Some (MarkersColor.UncertainValues _), _, _ -> Custom "bulleye"
+                | _, MarkersSize.UncertainValues _, _ -> Custom "petals"
+                | _, _, MarkersY.UncertainValues _ -> Custom "boxwhisker"
+                | _, _, _ -> defaultShape
+
         { Kind = markersType
         ; DisplayName = name
         ; Titles = titles
         ; Properties = 
-            Map.ofList ([ "x", x; "y", y; "shape", shapeToPropertyValue shape; "borderColor", PlotPropertyValue.StringValue borderColor ] @ color @ size) }
+            Map.ofList ([ "x", x; "y", y2; "shape", shapeToPropertyValue shape2; "borderColor", PlotPropertyValue.StringValue borderColor ] @ color2 @ size2) }
 
     /// Displays data as a collection of points, each having the value of one variable determining the position on the horizontal axis and the value of the other variable determining the position on the vertical axis. 
     static member markers (seriesX : float[], seriesY : float[], ?color : MarkersColor, 
-                           ?colorPalette : string, ?size : MarkersSize, ?sizeRange : MarkersSizeRange, 
+                           ?colorPalette : string, ?size : MarkersSize, ?sizePalette : MarkersSizePalette, 
                            ?shape : MarkersShape, ?borderColor : string, ?displayName: string, ?titles: MarkersTitles) : PlotInfo = 
         let colorPalette = defaultArg colorPalette defaultColorPalette
         let size = defaultArg size (MarkersSize.Value defaultSize)
-        let sizeRange = defaultArg sizeRange defaultSizeRange
+        let sizePalette = defaultArg sizePalette defaultSizePalette
         let shape = defaultArg shape defaultShape
         let borderColor = defaultArg borderColor defaultBorderColor
         let name = defaultArg displayName "markers"
@@ -227,10 +248,10 @@ type Plot private () =
         match color with
         | Some(color) -> 
             Plot.markers (MarkersX.Values seriesX, MarkersY.Values seriesY, displayName = name, color = color, colorPalette = colorPalette, 
-                 size = size, sizeRange = sizeRange, shape = shape, borderColor = borderColor, titles = titles)
+                 size = size, sizePalette = sizePalette, shape = shape, borderColor = borderColor, titles = titles)
         | None -> 
             Plot.markers (MarkersX.Values seriesX, MarkersY.Values seriesY, displayName = name, colorPalette = colorPalette, size = size, 
-                 sizeRange = sizeRange, shape = shape, borderColor = borderColor, titles = titles)
+                 sizePalette = sizePalette, shape = shape, borderColor = borderColor, titles = titles)
     
     static member line (x : LineX, y : LineY, ?stroke : string, ?thickness : float, 
                         ?treatAs : LineTreatAs, ?fill68 : string, ?fill95 : string, ?displayName: string, ?titles: LineTitles) : PlotInfo = 
