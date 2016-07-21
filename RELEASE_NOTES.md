@@ -1,4 +1,11 @@
-### Unreleased
+### -
+
+* Uses IDD 1.4.0
+* Enables uncertain markers.
+* Provides property "sizePalette" for markers.
+
+
+### -
 
 * Uses IDD 1.3.0
 * Plot "band" is renamed to "area" as it is in IDD.
