@@ -11,5 +11,6 @@ let Register(libraries: ISerializerLibrary seq) =
         | "Html" ->        
             lib.Register(ChartSerializer())
             lib.Register(PlotInfoSerializer())
+            lib.Register(AxisSerializer())
         | _ -> () // nothing to register
 

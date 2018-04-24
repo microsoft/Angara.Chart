@@ -15,11 +15,24 @@ type PlotInfo =
     ; Titles : Map<string, string>
     ; Properties: PlotProperties }
 
+type Axis =
+    | Numerical
+    | Labelled of float[] * string[] * float
+
+type ChartLayout =
+    | Lean = 0
+    | Chubby = 1
 
 /// Defines a chart as a collection plot definitions.
 type Chart =
-    { Plots: PlotInfo list }
-    static member ofList plots : Chart = { Plots = plots }
+    { Plots: PlotInfo list
+    ; XAxis: Axis
+    ; YAxis: Axis
+    ; Layout: ChartLayout}
+    static member ofList plots : Chart = { Plots = plots; XAxis = Axis.Numerical; YAxis = Axis.Numerical; Layout = ChartLayout.Chubby }
+    static member setXAxis axis (chart: Chart) : Chart = { chart with XAxis = axis }
+    static member setYAxis axis (chart: Chart) : Chart = { chart with YAxis = axis }
+    static member setLayout layout chart : Chart = { chart with Layout = layout }
 
 /// Defines names of heatmap axes
 type HeatmapTitles = {x: string option; y: string option; value: string option}
