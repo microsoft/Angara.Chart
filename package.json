@@ -1,15 +1,20 @@
 {
   "name": "Angara.ChartJS",
   "version": "0.1.2",
-  "license": "Microsoft Research",
+  "license": "MIT",
   "private": true,
   "main": "Gruntfile.js",
-  "dependencies": {},
+  "dependencies": {
+    "interactive-data-display": "~1.5.3",
+    "jquery": "~2.1.4",
+    "requirejs": "~2.1.22"
+  },
   "devDependencies": {
-    "bower": "^1.4.1",
     "grunt": "^0.4.5",
-    "grunt-bower-task": "^0.4.0",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-replace": "^0.11.0"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
   }
 }

@@ -2,19 +2,6 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        bower: {
-            install: {
-                options: {
-                    targetDir: 'src/Angara.ChartJS/lib',
-                    layout: 'byType',
-                    install: true,
-                    verbose: false,
-                    cleanTargetDir: false,
-                    cleanBowerDir: false,
-                    bowerOptions: {}
-                }
-            }
-        },
         copy: {
             chartjs: {
                 files: [
@@ -24,7 +11,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.registerTask('default', ['bower','copy']);
+    grunt.registerTask('default', ['copy']);
 };
