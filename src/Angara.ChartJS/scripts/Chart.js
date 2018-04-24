@@ -1,4 +1,4 @@
-﻿define(["jquery", "chartViewer.umd", "exports"], function ($, Charting, exports) {    
+﻿define(["jquery", "idd.umd", "exports"], function ($, Charting, exports) {    
     exports.Show = function (plots, container) {
         var plotMap = {};
         for (var i = 0; i < plots.length; i++) {
@@ -9,6 +9,6 @@
             props["titles"] = pi.titles;
             plotMap[i] = props;
         }
-        Charting.ChartViewer.show(container, plotMap);
+        Charting.InteractiveDataDisplay.show(container, plotMap);
     };
 });
