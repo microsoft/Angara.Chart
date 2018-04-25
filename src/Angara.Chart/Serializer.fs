@@ -34,6 +34,19 @@ module internal Helpers =
         ; Titles = map.["titles"].ToMap() |> Map.map(fun _ y -> y.ToStringValue())
         ; Properties = DeserializePlotProperties(map.["properties"]) }
 
+    let SerializeAxis (axis : Axis) : InfoSet = 
+            match axis with
+            | Numerical -> InfoSet.EmptyMap
+            | Labelled (ticks, labels, angle) ->
+                InfoSet.EmptyMap
+                    .AddInfoSet("ticks", InfoSet.DoubleArray ticks)
+                    .AddInfoSet("labels", InfoSet.StringArray labels)
+                    .AddDouble("angle", angle)
+
+    let DeserializeAxis (infoSet: InfoSet) : Axis =
+            let map = infoSet.ToMap()
+            if map.IsEmpty then Numerical else Labelled(map.["ticks"].ToDoubleArray(), map.["labels"].ToStringArray(), map.["angle"].ToDouble())
+
 open Helpers
 
 type internal PlotInfoSerializer () = 
@@ -42,10 +55,26 @@ type internal PlotInfoSerializer () =
         member x.Serialize _ (plot : PlotInfo) : InfoSet = SerializePlotInfo plot
         member x.Deserialize _ (infoSet : InfoSet) : PlotInfo = DeserializePlotInfo infoSet
 
+type internal AxisSerializer () =
+    interface ISerializer<Axis> with
+        member x.TypeId = "Axis"
+        member x.Serialize _ (axis : Axis) : InfoSet = SerializeAxis axis
+        member x.Deserialize _ (infoSet: InfoSet) : Axis = DeserializeAxis infoSet
+
+
 type internal ChartSerializer () = 
     interface ISerializer<Chart> with
         member x.TypeId = "Chart"
-        member x.Serialize _ (chart : Chart) : InfoSet = InfoSet.Seq(chart.Plots |> List.map SerializePlotInfo)
+        member x.Serialize _ (chart : Chart) : InfoSet =
+            InfoSet.EmptyMap
+                .AddString("layout", chart.Layout.ToString())
+                .AddInfoSet("xAxis", SerializeAxis chart.XAxis)
+                .AddInfoSet("yAxis", SerializeAxis chart.YAxis)
+                .AddInfoSet("plots", InfoSet.Seq(chart.Plots |> List.map SerializePlotInfo))
         member x.Deserialize _ (infoSet : InfoSet) : Chart = 
-            { Plots = infoSet.ToSeq() |> Seq.map DeserializePlotInfo |> Seq.toList }
+            let map = infoSet.ToMap()
+            let xAxis = DeserializeAxis map.["xAxis"]
+            let yAxis = DeserializeAxis map.["yAxis"]
+            let layout = System.Enum.Parse(typeof<ChartLayout>, map.["layout"].ToStringValue()) :?> ChartLayout
+            map.["plots"].ToSeq() |> Seq.map DeserializePlotInfo |> Seq.toList |> Chart.ofList |> Chart.setXAxis xAxis |> Chart.setYAxis yAxis |> Chart.setLayout layout
 

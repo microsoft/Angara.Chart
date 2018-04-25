@@ -12,13 +12,20 @@ namespace Angara.Charting.CSharp
     internal static class Helpers
     {
         internal static FSharpOption<T> Opt<T>(T value) where T : class => value == null ? FSharpOption<T>.None : FSharpOption<T>.Some(value);
-        internal static FSharpOption<T> Opt<T>(T? value) where T : struct => value.HasValue ? FSharpOption<T>.None : FSharpOption<T>.Some(value.Value);
+        internal static FSharpOption<T> Opt<T>(T? value) where T : struct => value.HasValue ? FSharpOption<T>.Some(value.Value) : FSharpOption<T>.None;
     }
 
     public static class ChartFactory
     {
-        public static c.Chart FromPlots(IEnumerable<PlotInfo> plots) => c.Chart.ofList(ListModule.OfSeq(plots));
-        public static c.Chart FromPlots(params PlotInfo[] plots) => c.Chart.ofList(ListModule.OfArray(plots));
+        public static c.Chart FromPlots(IEnumerable<PlotInfo> plots, ChartLayout layout = ChartLayout.Chubby, Axis xAxis = null, Axis yAxis = null)
+        {
+            var chart = c.Chart.ofList(ListModule.OfSeq(plots));
+            if (xAxis != null)
+                chart = Chart.setXAxis(xAxis, chart);
+            if (yAxis != null)
+                chart = Chart.setYAxis(yAxis, chart);
+            return Chart.setLayout(layout, chart);
+        }
     }
 
     public static class TitlesFactory
