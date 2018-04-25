@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- <link rel="stylesheet" href="../../../node_modules/interactive-data-display/dist/idd.css" />
+    <script src="../../../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../../../node_modules/npm-modernizr/modernizr.js"></script>
+    <script src="../../../node_modules/rx/dist/rx.all.js"></script>
+    <script src="../../../node_modules/jqueryui/jquery-ui.js"></script>
+    <script src="../../../node_modules/interactive-data-display/dist/idd.js"></script>
+    <script src="../../../node_modules/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="../../../node_modules/datatables.net/js/jquery.dataTables.js"></script>
+    
+    <link href="../../../dist/angara.tablejs.css" rel="stylesheet" />
+    <link href="../styles/samples.css" rel="stylesheet" />    
+    <script src="../../../dist/Chart.js"></script>  -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+    
+    <script type="text/javascript">
+        var source = {
+                    "layout": "Lean",
+                    "plots": [
+                    {
+                        "displayName": "Tu-tu-ruu",
+                        "kind": "markers",
+                        "properties": {
+                        "borderColor": "black",
+                        "color": "red",
+                        "shape": "box",
+                        "size": 10.0,
+                        "x": [ 0, 0.1, 0.3, 0.5, 0.8, 1.0],
+                        "y": [ 0.5, 0.6, 0.4, 0.1, 0.2, 0.8]
+                        },
+                        "titles": {
+                        "x": "Xtutu",
+                        "y": "YY"}
+                    },
+                    {
+                        "displayName": "line",
+                        "kind": "line",
+                        "properties": {
+                        "fill_68": "#1F497D",
+                        "fill_95": "#1F497D",
+                        "stroke": "#1F497D",
+                        "thickness": 1.0,
+                        "treatAs": "1",
+                        "x": [ 0, 0.1, 0.3, 0.5, 0.8, 1.0],
+                        "y": [ 0.5, 0.6, 0.4, 0.1, 0.2, 0.8]
+                        },
+                        "titles": {
+                        "x": "XV",
+                        "y": "YY"
+                        }
+                    }
+                    ],
+                    "xAxis": {
+                    "angle": 35.0,
+                    "labels": [
+                        "Alpha",
+                        "bEtHaNy",
+                        "F\nT"
+                    ],
+                    "ticks:double array": [0, 0.5, 1.0]
+                    },
+                    "yAxis": {}
+                };
+
+            require.config({
+                baseUrl: "../../../dist",               
+                paths: {
+                    'jquery': '../node_modules/jquery/dist/jquery',
+                    'idd.umd': '../node_modules/interactive-data-display/dist/idd.umd',
+                    'idd-css': '../node_modules/interactive-data-display/dist/idd.umd',
+                    'rx': '../node_modules/rx/dist/rx.lite',
+                    'svg': '../node_modules/svg.js/dist/svg',
+                    'filesaver': '../node_modules/file-saver/FileSaver',
+                    'css': '../node_modules/require-css/css',
+                    'jquery-ui': '../node_modules/jqueryui/jquery-ui',
+                    'jquery-mousewheel': '../node_modules/jquery-mousewheel/jquery.mousewheel'
+                }
+            });
+            require(["../../../dist/Chart.js"], function(Viewer) { 
+                Viewer.Show(source, $("#cv"));
+            });
+    </script>
+</head>
+<body>
+    <h2>Chart Viewer</h2>
+    <div id="cv" style="width:800px; height: 500px;"></div>
+</body>
+</html>

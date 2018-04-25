@@ -442,9 +442,9 @@ inherits@2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
-interactive-data-display@~1.5.3:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/interactive-data-display/-/interactive-data-display-1.5.3.tgz#0298f74312c5c67233c8e1ceadc11abd04575d59"
+interactive-data-display@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/interactive-data-display/-/interactive-data-display-1.5.4.tgz#dcfba77da459f47a0521c90ece473ef9f0104e02"
   dependencies:
     file-saver "~1.3.3"
     jasmine "~2.99.0"
@@ -705,7 +705,7 @@ request@<=2.81.0:
     tunnel-agent "^0.6.0"
     uuid "^3.0.0"
 
-require-css@~0.1.8:
+require-css@^0.1.10, require-css@~0.1.8:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/require-css/-/require-css-0.1.10.tgz#f1db8c6cfb2ad2a3a7409166cc6cf99b0d3f4502"
 
@@ -717,9 +717,9 @@ rimraf@~2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
-rx@~4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/rx/-/rx-4.1.0.tgz#a5f13ff79ef3b740fe30aa803fb09f98805d4782"
+rx@~3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/rx/-/rx-3.1.2.tgz#4fbd8d962cfa66972d71993c588ca7ebf48734a0"
 
 safe-buffer@^5.0.1:
   version "5.1.1"

@@ -5,9 +5,12 @@
   "private": true,
   "main": "Gruntfile.js",
   "dependencies": {
-    "interactive-data-display": "~1.5.3",
+    "interactive-data-display": "^1.5.4",
     "jquery": "~2.1.4",
-    "requirejs": "~2.1.22"
+    "require-css": "^0.1.10",
+    "requirejs": "~2.1.22",
+    "svg.js": "~2.3.6",
+    "rx": "~3.1.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
