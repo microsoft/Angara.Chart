@@ -12,7 +12,7 @@ namespace Angara.Charting.CSharp
     internal static class Helpers
     {
         internal static FSharpOption<T> Opt<T>(T value) where T : class => value == null ? FSharpOption<T>.None : FSharpOption<T>.Some(value);
-        internal static FSharpOption<T> Opt<T>(T? value) where T : struct => value.HasValue ? FSharpOption<T>.None : FSharpOption<T>.Some(value.Value);
+        internal static FSharpOption<T> Opt<T>(T? value) where T : struct => value.HasValue ? FSharpOption<T>.Some(value.Value) : FSharpOption<T>.None;
     }
 
     public static class ChartFactory
