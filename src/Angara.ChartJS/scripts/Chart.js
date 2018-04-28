@@ -41,6 +41,14 @@
                         $(chart.addDiv('<div class="idd-verticalTitle" style="font-size: larger;"></div>', "left"));
                 yAxisTitle.text(titlesY);
             }
+
+            if (chartInfo.xAxis && chartInfo.xAxis.ticks) {
+                chart.changeXAxis("labels", chartInfo.xAxis);
+            }
+
+            if (chartInfo.yAxis && chartInfo.yAxis.ticks) {
+                chart.changeYAxis("labels", chartInfo.yAxis);
+            }
         }
         else
         {
