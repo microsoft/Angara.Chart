@@ -6,7 +6,7 @@
   "main": "Gruntfile.js",
   "dependencies": {
     "interactive-data-display": "^1.5.4",
-    "jquery": "~2.1.4",
+    "jquery": "~3.5.0",
     "require-css": "^0.1.10",
     "requirejs": "~2.1.22",
     "svg.js": "~2.3.6",
